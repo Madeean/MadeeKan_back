@@ -47,5 +47,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function pembayaran(){
+        return $this->hasMany(Pembayaran::class,'user_id','id');
+    }
+
+    public function anak_kontrakan(){
+        return $this->hasMany(AnakKontrakan::class,'user_id','id');
+    }
+
     
 }

@@ -8,8 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class AnakKontrakan extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'umur',
+        'alamat_asli',
+        'foto_muka',
+        'alamat_kontrakan',
+        'harga_perbulan',
+        'user_id',
+    ];
 
     public function user(){
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->belongsTo(User::class,'id','user_id');
     }
 }

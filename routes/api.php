@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AnakKontrakanController;
 use App\Http\Controllers\API\authController;
 use App\Http\Controllers\API\pembayaranController;
 use Illuminate\Http\Request;
@@ -27,4 +28,5 @@ Route::get('/get-belum-lunas', [pembayaranController::class, 'GetBelumLunas'])->
 Route::get('/get-lunas', [pembayaranController::class, 'GetLunas'])->middleware('auth:api');
 Route::post('/bayar', [pembayaranController::class, 'bayar'])->middleware('auth:api');
 Route::get('/detail-transaksi',[pembayaranController::class, 'detailTransaksi'])->middleware('auth:api');
+Route::post('/add-anak-kontrakan', [AnakKontrakanController::class, 'addAnakKontrakan'])->middleware('auth:api');
 

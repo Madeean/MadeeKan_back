@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class pembayaranController extends Controller
 {
     public function GetLunas(Request $request){
-        $data = Pembayaran::with(['user, anak_kontakan'])->where('user_id',Auth::user()->id)->where('status','LUNAS')->get();
+        $data = Pembayaran::with(['user', 'anak_kontakan'])->where('user_id',Auth::user()->id)->where('status','LUNAS')->get();
         if($data){
 
             return response()->json([
@@ -28,7 +28,7 @@ class pembayaranController extends Controller
     }
 
     public function GetBelumLunas(Request $request){
-        $data = Pembayaran::with(['user, anak_kontakan'])->where('user_id',Auth::user()->id)->where('status','BELUM LUNAS')->get();
+        $data = Pembayaran::with(['user', 'anak_kontrakans'])->where('user_id',Auth::user()->id)->where('status','BELUM LUNAS')->get();
         if($data){
             return response()->json([
                 "status" => "success",
@@ -47,9 +47,8 @@ class pembayaranController extends Controller
             'bulan'     => 'required',
             'nama_pengontrak'  => 'required',
             'tanggal_bayar'=>'required',
-            'bukti_bayar'=>'required',
+            'bukti_bayar'=>'required|image|max:2048',
             'jumlah_bayar'=>'required',
-            'anak_kontrakan_id'=>'required',
         ]);
 
         //if validation fail
@@ -57,7 +56,12 @@ class pembayaranController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $anak_kontrakan = AnakKontrakan::where('id',$request->anak_kontrakan_id)->first();
+        $path = "http://127.0.0.1:8000/storage/";
+        $url = $request->file('bukti_bayar')->store('pembayaran-images', 'public');
+        $urel = ''.$path.''.$url;
+        $request->bukti_bayar = $urel;
+
+        $anak_kontrakan = AnakKontrakan::where('name',$request->nama_pengontrak)->first();
 
         $check = Pembayaran::where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->first();
 
@@ -71,10 +75,10 @@ class pembayaranController extends Controller
                 'data'=>$data,
             ]);
         }
-        if($request->jumlah_bayar == $anak_kontrakan->harga_perbulan){
+        if($request->jumlah_bayar == $anak_kontrakan->harga_perbulan || $request->jumlah_bayar > $anak_kontrakan->harga_perbulan){
             $data = Pembayaran::create([
                 'user_id'=>Auth::user()->id,
-                'anak_kontrakan_id'=>$request->anak_kontrakan_id,
+                'anak_kontrakan_id'=>$anak_kontrakan->id,
                 'bulan'=>$request->bulan,
                 'nama_pengontrak'=>$request->nama_pengontrak,
                 'tanggal_bayar'=>$request->tanggal_bayar,
@@ -91,7 +95,7 @@ class pembayaranController extends Controller
 
         $data = Pembayaran::create([
             'user_id'=>Auth::user()->id,
-            'anak_kontrakan_id'=>$request->anak_kontrakan_id,
+            'anak_kontrakan_id'=>$anak_kontrakan->id,
             'bulan'=>$request->bulan,
             'nama_pengontrak'=>$request->nama_pengontrak,
             'tanggal_bayar'=>$request->tanggal_bayar,
