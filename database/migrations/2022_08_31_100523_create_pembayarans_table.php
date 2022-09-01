@@ -22,6 +22,7 @@ class CreatePembayaransTable extends Migration
             $table->string('tanggal_bayar');
             $table->text('bukti_bayar');
             $table->integer('jumlah_bayar');
+            $table->string('status');
             $table->timestamps();
         });
     }
