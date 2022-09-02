@@ -22,6 +22,8 @@ class CreateAnakKontrakansTable extends Migration
             $table->integer('harga_perbulan');
             $table->text('foto_muka');
             $table->integer('user_id');
+            $table->string('created');
+            $table->string('updated');
             $table->timestamps();
         });
     }

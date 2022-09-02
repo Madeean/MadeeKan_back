@@ -16,6 +16,8 @@ class AnakKontrakan extends Model
         'alamat_kontrakan',
         'harga_perbulan',
         'user_id',
+        'created',
+        'updated',
     ];
 
     public function user(){
