@@ -13,7 +13,7 @@ class authController extends Controller
 {
     public function register(Request $request){
         $validator = Validator::make($request->all(), [
-            'email'     => 'required|email',
+            'email'     => 'required|email|unique:users,email',
             'password'  => 'required',
             'rooms'=>'required|integer',
             'nama_kontrakan'=>'required',
@@ -102,5 +102,53 @@ class authController extends Controller
                 'message' => 'Logout Successfully!',  
             ]);
         }
+    }
+
+    public function getUser($id){
+        $user = User::where('id', $id)->first();
+        if($user){
+            return response()->json([
+                'status' => "success",
+                'message' => 'Get User Successfully!',  
+                'user' => $user
+            ]);
+        }else{
+            return response()->json([
+                'status' => "error",
+                'message' => 'Get User Failed!',  
+            ]);
+        }
+
+    }
+
+    public function editProfile(Request $request, $id){
+        $data = User::where('id',$id)->first();
+        $validator = Validator::make($request->all(), [
+            'email'     => 'email|unique:users,email,'.$data->email,
+            'rooms'=>'integer',
+
+        ]);
+
+        //if validation fail
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        User::where('id', $id)->update([
+            'name'=>($request->name )? $request->name : $data->name,
+            'email'=>($request->email )? $request->email : $data->email,
+            'rooms'=>($request->rooms )? $request->rooms : $data->rooms,
+            'nama_kontrakan'=>($request->nama_kontrakan )? $request->nama_kontrakan : $data->nama_kontrakan,
+            'updated'=>date('Y-m-d'),
+
+        ]);
+        $user = User::where('email', $request->email)->first();
+
+        //user success login and create token
+        return response()->json([
+            'status' => "success",
+            'message' => 'Update Successfully!',
+            'user'    => $user, 
+        ], 200);
     }
 }
