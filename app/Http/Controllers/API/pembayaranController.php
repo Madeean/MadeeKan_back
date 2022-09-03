@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class pembayaranController extends Controller
 {
     public function GetLunas(Request $request){
-        $data = Pembayaran::with(['user', 'anak_kontakan'])->where('user_id',Auth::user()->id)->where('status','LUNAS')->get();
+        $data = Pembayaran::with(['user', 'anak_kontrakans'])->where('user_id',Auth::user()->id)->where('status','LUNAS')->get();
         if($data){
 
             return response()->json([
@@ -66,14 +66,35 @@ class pembayaranController extends Controller
         $check = Pembayaran::where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->first();
 
         if($check){
-            Pembayaran::update([
-                'status'=>'LUNAS'
-            ]);
-            $data = Pembayaran::with(['user','anak_kontrakan'])->where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->first();
-            return response()->json([
-                'success' => true,
-                'data'=>$data,
-            ]);
+            $harga = $anak_kontrakan->harga_perbulan;
+
+            $bayar1 = $check->jumlah_bayar;
+            $bayar2 = $request->jumlah_bayar;
+            $jumlah_bayar = $bayar1 + $bayar2;
+            if($harga == $jumlah_bayar || $jumlah_bayar > $harga){
+                $data = Pembayaran::where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->update([
+                    'status'=>'LUNAS',     
+                ]);
+                $dataa = Pembayaran::where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->first();
+                return response()->json([
+                    "status" => "success",
+                    "data"=>$dataa,
+                ],200);
+
+            }else{
+                $bayar1 = $check->jumlah_bayar;
+                $bayar2 = $request->jumlah_bayar;
+                $bayar = $bayar1 + $bayar2;
+                $dataa = Pembayaran::where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->update([
+                    'jumlah_bayar'=>$bayar,     
+                ]);
+                $data = Pembayaran::with(['user','anak_kontrakan'])->where('user_id',Auth::user()->id)->where('bulan',$request->bulan)->where('nama_pengontrak',$request->nama_pengontrak)->first();
+                return response()->json([
+                    'status' => "success",
+                    'data'=>$data,
+                ]);
+            }
+            
         }
         if($request->jumlah_bayar == $anak_kontrakan->harga_perbulan || $request->jumlah_bayar > $anak_kontrakan->harga_perbulan){
             $data = Pembayaran::create([
@@ -87,7 +108,7 @@ class pembayaranController extends Controller
                 'status'=>'LUNAS'
             ]);
             return response()->json([
-                'success' => true,
+                'status' => "success",
                 'data'=>$data,
             ]);
         }
@@ -105,7 +126,7 @@ class pembayaranController extends Controller
         ]);
 
         return response()->json([
-            'success' => true,
+            'status' => "success",
             'data'=>$data,
         ]);
     }
@@ -114,12 +135,12 @@ class pembayaranController extends Controller
         $data = Pembayaran::with(['user','anak_kontrakan'])->where('id',$id)->first();
         if($data){
             return response()->json([
-                'success' => true,
+                'status' => "success",
                 'data'=>$data,
             ]);
         }else{
             return response()->json([
-                'success' => false,
+                'status' => "success",
                 'message'=>'data tidak ditemukan'
             ]);
         }

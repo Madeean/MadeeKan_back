@@ -33,7 +33,7 @@ class authController extends Controller
             
             //return with status code "400" and login failed
             return response()->json([
-                'success' => false,
+                'status' => "error",
                 'message' => 'Login Failed!',
             ], 400);
         }
@@ -52,7 +52,7 @@ class authController extends Controller
 
         //user success login and create token
         return response()->json([
-            'success' => true,
+            'status' => "success",
             'message' => 'Register Successfully!',
             'user'    => $user,
             'token'   => $user->createToken('authToken')->accessToken    
@@ -78,14 +78,14 @@ class authController extends Controller
             
             //return with status code "400" and login failed
             return response()->json([
-                'success' => false,
+                'success' => "error",
                 'message' => 'Login Failed!',
             ], 400);
         }
 
         //user success login and create token
         return response()->json([
-            'success' => true,
+            'status' => "success",
             'message' => 'Login Successfully!',
             'user'    => $user,
             'token'   => $user->createToken('authToken')->accessToken    
@@ -98,7 +98,7 @@ class authController extends Controller
         //if remove token successfully
         if($removeToken) {
             return response()->json([
-                'success' => true,
+                'status' => "success",
                 'message' => 'Logout Successfully!',  
             ]);
         }

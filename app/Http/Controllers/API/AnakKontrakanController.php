@@ -105,7 +105,7 @@ class AnakKontrakanController extends Controller
             ]);
 
             return response()->json([
-                'success'=>true,
+                'status'=>"success",
                 'message' => 'berhasil edit anak kontrakan',
                 'data'=>$anak,
             ]);
@@ -120,7 +120,7 @@ class AnakKontrakanController extends Controller
             'updated' => date('Y-m-d'),
         ]);
         return response()->json([
-            'success'=>true,
+            'status'=>"success",
             'message' => 'berhasil edit anak kontrakan',
             'data'=>$anak,
         ]);
