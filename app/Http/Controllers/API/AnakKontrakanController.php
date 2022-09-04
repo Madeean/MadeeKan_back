@@ -128,7 +128,7 @@ class AnakKontrakanController extends Controller
     }
 
     public function getAnakKontrakan(){
-        $data = AnakKontrakan::all();
+        $data = AnakKontrakan::where('user_id',Auth::user()->id)->get();
         if($data){
             return response()->json([
                 "status" => "success",
@@ -176,4 +176,6 @@ class AnakKontrakanController extends Controller
         }
         
     }
+
+
 }
