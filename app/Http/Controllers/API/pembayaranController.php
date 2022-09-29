@@ -56,7 +56,7 @@ class pembayaranController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $path = "http://127.0.0.1:8000/storage/";
+        $path = "https://madeekan.madee.my.id/storage/";
         $url = $request->file('bukti_bayar')->store('pembayaran-images', 'public');
         $urel = ''.$path.''.$url;
         $request->bukti_bayar = $urel;
@@ -137,6 +137,21 @@ class pembayaranController extends Controller
             return response()->json([
                 'status' => "success",
                 'data'=>$data,
+            ]);
+        }else{
+            return response()->json([
+                'status' => "Failed",
+                'message'=>'data tidak ditemukan'
+            ]);
+        }
+    }
+
+    public function deleteTransaksi($id){
+        $data = Pembayaran::where('id',$id)->delete();
+        if($data){
+            return response()->json([
+                'status' => "success",
+                'message'=>'data berhasil dihapus'
             ]);
         }else{
             return response()->json([

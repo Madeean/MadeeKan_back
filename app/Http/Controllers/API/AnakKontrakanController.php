@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\API\AnakKontrakan;
 use App\Http\Controllers\Controller;
+use App\Models\API\Pembayaran;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +29,7 @@ class AnakKontrakanController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $path = "http://127.0.0.1:8000/storage/";
+        $path = "https://madeekan.madee.my.id/storage/";
         $url = $request->file('foto_muka')->store('anak-kontrakan-images', 'public');
         $urel = ''.$path.''.$url;
         $request->foto_muka = $urel;
@@ -88,7 +89,7 @@ class AnakKontrakanController extends Controller
                 File::delete($data->foto_muka);
             }
             
-            $path = "http://127.0.0.1:8000/storage/";
+            $path = "https://madeekan.madee.my.id/storage/";
             $url = $request->file('foto_muka')->store('anak-kontrakan-images', 'public');
             $urel = ''.$path.''.$url;
             $img = $urel;
@@ -175,6 +176,39 @@ class AnakKontrakanController extends Controller
             ],500);
         }
         
+    }
+
+    public function getBelumBayarBulanIni($bulan){
+        try{
+            
+            $data = Pembayaran::where('user_id',Auth::user()->id)->where('bulan',$bulan)->get(['anak_kontrakan_id','user_id','nama_pengontrak','bukti_bayar']);
+            if($data->count() == 0){
+                $belumBayar = AnakKontrakan::where('user_id',Auth::user()->id)->get();
+                return response()->json([
+                    "status" => "success",
+                    "message"=>"semua anak kontrakan belum bayar bulan $bulan",
+                    "data"=>$belumBayar,
+                ],200);
+            }else{
+                $dataSudahBayar = [];
+                for($i = 0; $i<$data->count(); $i++){
+                    $dataSudahBayar[$i] = $data[$i]->anak_kontrakan_id;
+                }
+                $belumBayar = AnakKontrakan::where('user_id',Auth::user()->id)->whereNotIn('id',$dataSudahBayar)->get();
+
+                return response()->json([
+                    "status" => "success",
+                    "data yang sudah bayar"=>$data,
+                    "data yang belum bayar"=>$belumBayar,
+                ],200);
+            }
+
+        }catch(Exception $err){
+            return response()->json([
+                "status" => "error",
+                "message"=>"data gagal dihapus ".$err->getMessage(),
+            ],500);
+        }
     }
 
 
