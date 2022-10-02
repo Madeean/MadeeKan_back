@@ -28,6 +28,7 @@ Route::post('/logout', [authController::class, 'logout'])->middleware('auth:api'
 
 Route::get('/get-belum-lunas', [pembayaranController::class, 'GetBelumLunas'])->middleware('auth:api');
 Route::get('/get-lunas', [pembayaranController::class, 'GetLunas'])->middleware('auth:api');
+Route::get('/get-pembayaran', [pembayaranController::class, 'GetLunasDanGaLunas'])->middleware('auth:api');
 Route::post('/bayar', [pembayaranController::class, 'bayar'])->middleware('auth:api');
 Route::get('/detail-transaksi',[pembayaranController::class, 'detailTransaksi'])->middleware('auth:api');
 Route::post('/delete/pembayaran/{id}',[pembayaranController::class, 'deleteTransaksi'])->middleware('auth:api');
@@ -40,3 +41,4 @@ Route::get('/detail-anak-kontrakan/{id}', [AnakKontrakanController::class, 'deta
 Route::post('/delete/anak-kontrakan/{id}',[AnakKontrakanController::class, 'deleteAnakKontrakan'])->middleware('auth:api');
 Route::post('/update/anak-kontrakan/{id}',[AnakKontrakanController::class, 'editAnakKontrakan'])->middleware('auth:api');
 Route::get('/belum-bayar-bulan-ini/{bulan}',[AnakKontrakanController::class, 'getBelumBayarBulanIni'])->middleware('auth:api');
+

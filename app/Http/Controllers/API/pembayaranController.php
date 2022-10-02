@@ -11,6 +11,21 @@ use Illuminate\Support\Facades\Validator;
 
 class pembayaranController extends Controller
 {
+    public function GetLunasDanGaLunas(Request $request){
+        $data = Pembayaran::with(['user', 'anak_kontrakans'])->where('user_id',Auth::user()->id)->get();
+        if($data){
+
+            return response()->json([
+                "status" => "success",
+                "data"=>$data,
+            ],200);
+        }else{
+            return response()->json([
+                "status" => "success",
+                "message"=>"pembayaran belum ada",
+            ],404);
+        }
+    }
     public function GetLunas(Request $request){
         $data = Pembayaran::with(['user', 'anak_kontrakans'])->where('user_id',Auth::user()->id)->where('status','LUNAS')->get();
         if($data){
