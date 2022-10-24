@@ -144,7 +144,7 @@ class AnakKontrakanController extends Controller
     }
 
     public function detailAnakKontrakan($id){
-        $data = AnakKontrakan::with('user')->where('id',$id)->first();
+        $data = AnakKontrakan::where('id',$id)->first();
         if($data){
             return response()->json([
                 "status" => "success",
