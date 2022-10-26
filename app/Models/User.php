@@ -24,6 +24,12 @@ class User extends Authenticatable
         'password',
         'rooms',
         'nama_kontrakan',
+        'role',
+        'foto_muka',
+        'umur',
+        'alamat_sesuai_ktp',
+        'alamat_kontrakan_sekarang',
+        'harga_perbulan',
         'created',
         'updated',
     ];

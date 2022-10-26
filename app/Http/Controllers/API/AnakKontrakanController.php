@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\API\Pembayaran;
 use App\Models\API\AnakKontrakan;
 use App\Http\Controllers\Controller;
-use App\Models\API\Pembayaran;
-use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class AnakKontrakanController extends Controller
 {
@@ -129,7 +130,7 @@ class AnakKontrakanController extends Controller
     }
 
     public function getAnakKontrakan(){
-        $data = AnakKontrakan::where('user_id',Auth::user()->id)->get();
+        $data = User::where('nama_kontrakan',Auth::user()->nama_kontrakan)->get();
         if($data){
             return response()->json([
                 "status" => "success",

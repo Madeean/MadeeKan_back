@@ -12,13 +12,15 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'user_id',
-        'anak_kontrakan_id',
         'bulan',
         'nama_pengontrak',
         'tanggal_bayar',
+        'status_lunas',
+        'status_konfirmasi',
+        'nama_kontrakan',
         'bukti_bayar',
         'jumlah_bayar',
-        'status',
+        'role',
 
     ];
 

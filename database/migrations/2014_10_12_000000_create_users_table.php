@@ -17,9 +17,16 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->integer('rooms');
-            $table->string('nama_kontrakan');
+            $table->integer('rooms')->nullable();
+            $table->string('nama_kontrakan')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('role');
+            $table->string('alamat_sesuai_ktp')->nullable();
+            $table->string('alamat_kontrakan_sekarang')->nullable();
+            $table->string('harga_perbulan')->nullable();
+            $table->text('foto_muka')->nullable();
+            $table->integer('umur')->nullable();
+
             $table->string('password');
             $table->string('created');
             $table->string('updated');

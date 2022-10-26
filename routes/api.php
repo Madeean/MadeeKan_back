@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AnakKontrakanController;
 use App\Http\Controllers\API\authController;
 use App\Http\Controllers\API\pembayaranController;
+use App\Models\API\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,20 +26,23 @@ Route::post('/register', [authController::class, 'register']);
 Route::post('/login', [authController::class, 'login']);
 Route::post('/logout', [authController::class, 'logout'])->middleware('auth:api');
 
+Route::get('/get-user-kontrakan',[authController::class,'getUserPengontrak'])->middleware('auth:api');
+Route::get('/detail-pengontrak/{id}',[authController::class,'detailPengontrak'])->middleware('auth:api');
+Route::post('/delete-pengontrak/{id}',[authController::class,'deletePengontrak'])->middleware('auth:api');
+Route::post('/edit-profile/{id}',[authController::class,'editProfile'])->middleware('auth:api');
 
-Route::get('/get-belum-lunas', [pembayaranController::class, 'GetBelumLunas'])->middleware('auth:api');
-Route::get('/get-lunas', [pembayaranController::class, 'GetLunas'])->middleware('auth:api');
-Route::get('/get-pembayaran', [pembayaranController::class, 'GetLunasDanGaLunas'])->middleware('auth:api');
 Route::post('/bayar', [pembayaranController::class, 'bayar'])->middleware('auth:api');
-Route::get('/detail-transaksi',[pembayaranController::class, 'detailTransaksi'])->middleware('auth:api');
-Route::post('/delete/pembayaran/{id}',[pembayaranController::class, 'deleteTransaksi'])->middleware('auth:api');
+Route::get('/get-request-pembayaran', [pembayaranController::class, 'GetRequestPembayaranPengontrak'])->middleware('auth:api');
+Route::get('/get-pembayaran-diterima-pengontrak',[pembayaranController::class,'GetPembayaranPengontrak'])->middleware('auth:api');
+Route::get('/get-request-pemilik',[pembayaranController::class,'getRequestPembayaranPemilik'])->middleware('auth:api');
+Route::get('/detail-transaksi/{id}',[pembayaranController::class, 'detailTransaksi'])->middleware('auth:api');
+Route::post('/delete-pembayaran/{id}',[pembayaranController::class, 'deleteTransaksi'])->middleware('auth:api');
+Route::get('/get-belum-bayar-bulanan/{bulan}',[pembayaranController::class,'getBelumBayarBulanan'])->middleware('auth:api');
+Route::get('/get-pembayaran-diterima-pemilik',[pembayaranController::class,'getPembayaranDiterimaPemilik'])->middleware('auth:api');
+Route::get('/get-pembayaran-belum-lunas-pemilik',[pembayaranController::class,'getPembayaranBelumLunasPemilik'])->middleware('auth:api');
+
+Route::post('/terima-pembayaran/{id}',[pembayaranController::class,'AcceptPembayaran'])->middleware('auth:api');
+Route::post('/tolak-pembayaran/{id}',[pembayaranController::class,'RejectPembayaran'])->middleware('auth:api');
 
 
-
-Route::post('/add-anak-kontrakan', [AnakKontrakanController::class, 'addAnakKontrakan'])->middleware('auth:api');
-Route::get('/get-anak-kontrakan', [AnakKontrakanController::class, 'getAnakKontrakan'])->middleware('auth:api');
-Route::get('/detail-anak-kontrakan/{id}', [AnakKontrakanController::class, 'detailAnakKontrakan'])->middleware('auth:api');
-Route::post('/delete/anak-kontrakan/{id}',[AnakKontrakanController::class, 'deleteAnakKontrakan'])->middleware('auth:api');
-Route::post('/update/anak-kontrakan/{id}',[AnakKontrakanController::class, 'editAnakKontrakan'])->middleware('auth:api');
-Route::get('/belum-bayar-bulan-ini/{bulan}',[AnakKontrakanController::class, 'getBelumBayarBulanIni'])->middleware('auth:api');
 
