@@ -293,4 +293,21 @@ class authController extends Controller
         }
 
     }
+
+    public function getNamaKontrakan(){
+        $user = User::where('role', 'pemilik')->get('nama_kontrakan');
+        if($user){
+            return response()->json([
+                'status' => "success",
+                'message' => 'Get nama kontrakan Successfully!',  
+                'user' => $user
+            ],200);
+        }else{
+            return response()->json([
+                'status' => "error",
+                'message' => 'Get nama kontrakan Failed!',  
+            ],400);
+        }
+
+    }
 }

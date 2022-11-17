@@ -27,6 +27,7 @@ Route::post('/login', [authController::class, 'login']);
 Route::post('/logout', [authController::class, 'logout'])->middleware('auth:api');
 
 Route::get('/get-user-kontrakan',[authController::class,'getUserPengontrak'])->middleware('auth:api');
+Route::get('/get-nama-kontrakan',[authController::class,'getNamaKontrakan'])->middleware('auth:api');
 Route::get('/detail-pengontrak/{id}',[authController::class,'detailPengontrak'])->middleware('auth:api');
 Route::post('/delete-pengontrak/{id}',[authController::class,'deletePengontrak'])->middleware('auth:api');
 Route::post('/edit-profile/{id}',[authController::class,'editProfile'])->middleware('auth:api');
