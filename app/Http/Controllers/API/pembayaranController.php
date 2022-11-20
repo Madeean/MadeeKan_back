@@ -298,7 +298,7 @@ class pembayaranController extends Controller
     }
 
     public function GetRequestPembayaranPengontrak(){
-        $data = Pembayaran::with('user')->where('status_konfirmasi','Menunggu Konfirmasi')->orWhere('status_konfirmasi','Pembayaran Ditolak')->where('id',Auth::user()->id)->get();
+        $data = Pembayaran::whereIn('status_konfirmasi',['Menunggu Konfirmasi','Pembayaran Ditolak'])->where('id',Auth::user()->id)->get();
         if($data){
             return response()->json([
                 'status' => "success",
