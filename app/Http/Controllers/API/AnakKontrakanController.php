@@ -22,7 +22,7 @@ class AnakKontrakanController extends Controller
             'alamat_asli'=>'required',
             'foto_muka'=>'required|image|max:2048',
             'alamat_kontrakan'=>'required',
-            'harga_perbulan'=>'required',
+            'harga_perbulan'=>'required|integer',
         ]);
 
         //if validation fail

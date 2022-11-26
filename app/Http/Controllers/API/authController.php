@@ -310,4 +310,35 @@ class authController extends Controller
         }
 
     }
+
+    public function editProfilePengontrak(Request $request){
+        $profile = User::where('id',Auth::user()->id)->first();
+        $validator = Validator::make($request->all(), [
+            'email' => 'email|unique:users,email,'.$profile->email,
+            'name'=>'string',
+            'umur'=>'integer',
+
+        ]);
+
+        //if validation fail
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+        User::where('id', Auth::user()->id)->update([
+            'name'=>($request->name )? $request->name : $profile->name,
+            'email'=>($request->email )? $request->email : $profile->email,
+            'umur'=>($request->umur )? $request->umur : $profile->umur,
+            'updated'=>date('Y-m-d'),
+
+        ]);
+        $user = User::where('id', Auth::user()->id)->first();
+
+        //user success login and create token
+        return response()->json([
+            'status' => "success",
+            'message' => 'Update Successfully!',
+            'user'    => $user, 
+        ], 200);
+
+    }
 }

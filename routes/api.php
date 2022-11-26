@@ -45,5 +45,5 @@ Route::get('/get-pembayaran-belum-lunas-pemilik',[pembayaranController::class,'g
 Route::post('/terima-pembayaran/{id}',[pembayaranController::class,'AcceptPembayaran'])->middleware('auth:api');
 Route::post('/tolak-pembayaran/{id}',[pembayaranController::class,'RejectPembayaran'])->middleware('auth:api');
 
-
+Route::post('/edit-profile-pengontrak',[authController::class,'editProfilePengontrak'])->middleware('auth:api');
 
