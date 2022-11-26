@@ -30,7 +30,7 @@ Route::get('/get-user-kontrakan',[authController::class,'getUserPengontrak'])->m
 Route::get('/get-nama-kontrakan',[authController::class,'getNamaKontrakan']);
 Route::get('/detail-pengontrak/{id}',[authController::class,'detailPengontrak'])->middleware('auth:api');
 Route::post('/delete-pengontrak/{id}',[authController::class,'deletePengontrak'])->middleware('auth:api');
-Route::post('/edit-profile/{id}',[authController::class,'editProfile'])->middleware('auth:api');
+Route::post('/edit-profile',[authController::class,'editProfile'])->middleware('auth:api');
 
 Route::post('/bayar', [pembayaranController::class, 'bayar'])->middleware('auth:api');
 Route::get('/get-request-pembayaran', [pembayaranController::class, 'GetRequestPembayaranPengontrak'])->middleware('auth:api');

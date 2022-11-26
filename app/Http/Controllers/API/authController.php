@@ -169,14 +169,12 @@ class authController extends Controller
 
     }
 
-    public function editProfile(Request $request, $id){
-        $data = User::where('id',$id)->first();
+    public function editProfile(Request $request){
+        $data = User::where('id',Auth::user()->id)->first();
         $validator = Validator::make($request->all(), [
-            'email'     => 'email|unique:users,email,'.$data->email,
+           'nama_kontrakan'=>'string',
             'rooms'=>'integer',
             'name'=>'string',
-            'umur'=>'integer',
-            'password'=>'min:3',
 
         ]);
 
@@ -185,55 +183,39 @@ class authController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if(Auth::user()->role == "pemilik"){
-            User::where('id', $id)->update([
-                'name'=>($request->name )? $request->name : $data->name,
-                'email'=>($request->email )? $request->email : $data->email,
-                'rooms'=>($request->rooms )? $request->rooms : $data->rooms,
+        
+        User::where('id', Auth::user()->id)->update([
+            'name'=>($request->name )? $request->name : $data->name,
+            'rooms'=>($request->rooms )? $request->rooms : $data->rooms,
+            'nama_kontrakan'=>($request->nama_kontrakan )? $request->nama_kontrakan : $data->nama_kontrakan,
+
+            'updated'=>date('Y-m-d'),
+
+        ]);
+        $user = User::where('id', Auth::user()->id)->first();
+
+        if($request->nama_kontrakan){
+            $data1 = User::where('nama_kontrakan',$data->nama_kontrakan)->update([
                 'nama_kontrakan'=>($request->nama_kontrakan )? $request->nama_kontrakan : $data->nama_kontrakan,
-
-                'updated'=>date('Y-m-d'),
-    
             ]);
-            $user = User::where('id', $id)->first();
-
-            if($request->nama_kontrakan){
-                $data1 = User::where('nama_kontrakan',$data->nama_kontrakan)->update([
-                    'nama_kontrakan'=>($request->nama_kontrakan )? $request->nama_kontrakan : $data->nama_kontrakan,
-                ]);
-                $data2 = Pembayaran::where('nama_kontrakan',$data->nama_kontrakan)->update([
-                    'nama_kontrakan'=>($request->nama_kontrakan )? $request->nama_kontrakan : $data->nama_kontrakan,
-                ]);
-                return response()->json([
-                    'status' => "success",
-                    'message' => 'Update Successfully!',
-                    'user'    => $user, 
-                ], 200);
-            }
-    
-            //user success login and create token
+            $data2 = Pembayaran::where('nama_kontrakan',$data->nama_kontrakan)->update([
+                'nama_kontrakan'=>($request->nama_kontrakan )? $request->nama_kontrakan : $data->nama_kontrakan,
+            ]);
+            $data3 = User::where('id',Auth::user()->id)->first();
             return response()->json([
                 'status' => "success",
                 'message' => 'Update Successfully!',
-                'user'    => $user, 
-            ], 200);
-        }else if(Auth::user()->role == "pengontrak"){
-            User::where('id', $id)->update([
-                'name'=>($request->name )? $request->name : $data->name,
-                'email'=>($request->email )? $request->email : $data->email,
-                'umur'=>($request->umur )? $request->umur : $data->umur,
-                'updated'=>date('Y-m-d'),
-    
-            ]);
-            $user = User::where('id', $id)->first();
-    
-            //user success login and create token
-            return response()->json([
-                'status' => "success",
-                'message' => 'Update Successfully!',
-                'user'    => $user, 
+                'user'    => $data3, 
             ], 200);
         }
+    
+            //user success login and create token
+            return response()->json([
+                'status' => "success",
+                'message' => 'Update Successfully!',
+                'user'    => $user, 
+            ], 200);
+        
 
     }
 
