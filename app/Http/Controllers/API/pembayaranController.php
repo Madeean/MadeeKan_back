@@ -216,7 +216,7 @@ class pembayaranController extends Controller
             $dataa = Pembayaran::where('user_id',$data_user->id)->where('bulan',$data->bulan)->where('nama_pengontrak',$data->nama_pengontrak)->first();
             return response()->json([
                 "status" => "success",
-                "data"=>$dataa,
+                "data"=>$dataa, 
             ],200);
         }
 
@@ -225,9 +225,10 @@ class pembayaranController extends Controller
         $data = Pembayaran::where('id',$id)->update([
             'status_konfirmasi'=>'Pembayaran Ditolak'
         ]);
+        $data2 = Pembayaran::where('id',$id)->first();
         return response()->json([
             'status' => "success",
-            'data'=>$data,
+            'data'=>$data2,
         ]);
     }
 
@@ -320,8 +321,9 @@ class pembayaranController extends Controller
                 'message'=>'anda tidak memiliki akses'
             ]);
         }
+        $akun = Auth::user()->id;
 
-        $data = Pembayaran::where('nama_kontrakan',Auth::user()->nama_kontrakan)->where('role','pengontrak')->where('bulan',$bulan)->get(['user_id','nama_pengontrak','bukti_bayar','nama_kontrakan','status_konfirmasi','status_lunas']);
+        $data = Pembayaran::where('nama_kontrakan',$akun->nama_kontrakan)->where('role','pengontrak')->where('bulan',$bulan)->get(['user_id','nama_pengontrak','bukti_bayar','nama_kontrakan','status_konfirmasi','status_lunas']);
 
         // return response()->json([
         //     'status' => "success",
@@ -330,7 +332,7 @@ class pembayaranController extends Controller
         // ]);
 
             if($data->count() == 0){
-                $belumBayar = User::where('nama_kontrakan',Auth::user()->nama_kontrakan)->where('role','pengontrak')->get();
+                $belumBayar = User::where('nama_kontrakan',$akun->nama_kontrakan)->where('role','pengontrak')->where('bulan',$bulan)->get();
                 return response()->json([
                     "status" => "success",
                     "message"=>"semua anak kontrakan belum bayar bulan $bulan, list belum bayar",
@@ -341,12 +343,12 @@ class pembayaranController extends Controller
                 for($i = 0; $i<$data->count(); $i++){
                     $dataSudahBayar[$i] = $data[$i]->user_id;
                 }
-                $belumBayar = User::whereNotIn('id',$dataSudahBayar)->where('role','pengontrak')->get();
+                $belumBayar = User::whereNotIn('id',$dataSudahBayar)->where('role','pengontrak')->where("bulan",$bulan)->get();
                 return response()->json([
                     "status" => "success",
-                    "list data sudah bayar"=>$dataSudahBayar,
-                    "data yang sudah bayar"=>$data,
-                    "data yang belum bayar"=>$belumBayar,
+                    "list_data_sudah_bayar"=>$dataSudahBayar,
+                    "data_yang_sudah_bayar"=>$data,
+                    "data_yang_belum_bayar"=>$belumBayar,
                 ],200);
 
             }
@@ -354,7 +356,7 @@ class pembayaranController extends Controller
         }catch(Exception $err){
             return response()->json([
                 "status" => "error",
-                "message"=>"data gagal dihapus ".$err->getMessage(),
+                "message"=>"data gagal diambil ".$err->getMessage(),
             ],500);
         }
     }
@@ -396,4 +398,22 @@ class pembayaranController extends Controller
             ]);
         }
     }
+
+
+    public function getJumlahOrangNgontrak(){
+        $data = User::where('nama_kontrakan',Auth::user()->nama_kontrakan)->where('role','pengontrak')->count();
+        if($data){
+            return response()->json([
+                'status' => "success",
+                'data'=>$data,
+            ]);
+        }else{
+            return response()->json([
+                'status' => "Failed",
+                'message'=>'data tidak ditemukan'
+            ]);
+        }
+    }
+
+
 }
