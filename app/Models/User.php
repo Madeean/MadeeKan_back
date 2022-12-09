@@ -32,6 +32,7 @@ class User extends Authenticatable
         'harga_perbulan',
         'created',
         'updated',
+        'tokenFCM',
     ];
 
     /**

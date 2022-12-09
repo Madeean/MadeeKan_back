@@ -21,6 +21,7 @@ class authController extends Controller
             'rooms'=>'numeric',
             'nama_kontrakan'=>'string',
             'role'=>'string|required',
+            'tokenFCM'=>'string|require',
 
         ]);
 
@@ -55,6 +56,7 @@ class authController extends Controller
                 'harga_perbulan'=>$request->harga_perbulan,
                 'created'=>date('Y-m-d'),
                 'updated'=>date('Y-m-d'),
+                'tokenFCM'=>$request->tokenFCM,
     
             ]);
             $user = User::where('email', $request->email)->first();
@@ -85,6 +87,7 @@ class authController extends Controller
                 'umur'=>$request->umur,
                 'created'=>date('Y-m-d'),
                 'updated'=>date('Y-m-d'),
+                'tokenFCM'=>$request->tokenFCM,
     
             ]);
             $user = User::where('email', $request->email)->first();
@@ -261,7 +264,9 @@ class authController extends Controller
 
     public function deletePengontrak($id){
         $user = User::where('role', 'pengontrak')->where('id',$id)->first();
+        $pembayaran = Pembayaran::where('nama_pengontrak',$user->name)->first();
         if($user){
+            $pembayaran->delete();
             $user->delete();
             return response()->json([
                 'status' => "success",
@@ -322,5 +327,21 @@ class authController extends Controller
             'user'    => $user, 
         ], 200);
 
+    }
+
+    public function getPemilik($nama_kontrakan){
+        $data = User::where('nama_kontrakan',$nama_kontrakan)->where('role','pemilik')->first();
+        if($data){
+            return response()->json([
+                'status' => "success",
+                'message' => 'Get Pemilik Successfully!',  
+                'user' => $data
+            ],200);
+        }else{
+            return response()->json([
+                'status' => "error",
+                'message' => 'Get Pemilik Failed!',  
+            ],400);
+        }
     }
 }

@@ -48,3 +48,5 @@ Route::post('/tolak-pembayaran/{id}',[pembayaranController::class,'RejectPembaya
 Route::post('/edit-profile-pengontrak',[authController::class,'editProfilePengontrak'])->middleware('auth:api');
 
 Route::get('/get-jumlah-orang-ngontrak',[pembayaranController::class,'getJumlahOrangNgontrak'])->middleware('auth:api');
+
+Route::get('/get-pemilik/{nama_kontrakan}',[authController::class,'getPemilik'])->middleware('auth:api');
