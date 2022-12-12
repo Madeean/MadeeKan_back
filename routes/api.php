@@ -26,8 +26,8 @@ Route::post('/register', [authController::class, 'register']);
 Route::post('/login', [authController::class, 'login']);
 Route::post('/logout', [authController::class, 'logout'])->middleware('auth:api');
 
-Route::get('/get-user-kontrakan',[authController::class,'getUserPengontrak'])->middleware('auth:api');
 Route::get('/get-nama-kontrakan',[authController::class,'getNamaKontrakan']);
+Route::get('/get-user-kontrakan',[authController::class,'getUserPengontrak'])->middleware('auth:api');
 Route::get('/detail-pengontrak/{id}',[authController::class,'detailPengontrak'])->middleware('auth:api');
 Route::post('/delete-pengontrak/{id}',[authController::class,'deletePengontrak'])->middleware('auth:api');
 Route::post('/edit-profile',[authController::class,'editProfile'])->middleware('auth:api');
@@ -44,6 +44,7 @@ Route::get('/get-pembayaran-belum-lunas-pemilik',[pembayaranController::class,'g
 
 Route::post('/terima-pembayaran/{id}',[pembayaranController::class,'AcceptPembayaran'])->middleware('auth:api');
 Route::post('/tolak-pembayaran/{id}',[pembayaranController::class,'RejectPembayaran'])->middleware('auth:api');
+
 
 Route::post('/edit-profile-pengontrak',[authController::class,'editProfilePengontrak'])->middleware('auth:api');
 

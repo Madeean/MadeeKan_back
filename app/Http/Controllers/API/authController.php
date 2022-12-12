@@ -21,7 +21,7 @@ class authController extends Controller
             'rooms'=>'numeric',
             'nama_kontrakan'=>'string',
             'role'=>'string|required',
-            'tokenFCM'=>'string|require',
+            'tokenFCM'=>'string|required',
 
         ]);
 
@@ -263,11 +263,9 @@ class authController extends Controller
     }
 
     public function deletePengontrak($id){
-        $user = User::where('role', 'pengontrak')->where('id',$id)->first();
-        $pembayaran = Pembayaran::where('nama_pengontrak',$user->name)->first();
+        $pembayaran = Pembayaran::where('user_id',$id)->delete();
+        $user = User::where('role', 'pengontrak')->where('id',$id)->delete();
         if($user){
-            $pembayaran->delete();
-            $user->delete();
             return response()->json([
                 'status' => "success",
                 'message' => 'Delete User Successfully!',  
@@ -280,7 +278,7 @@ class authController extends Controller
         }
 
     }
-
+    
     public function getNamaKontrakan(){
         $user = User::where('role', 'pemilik')->get('nama_kontrakan');
         if($user){
@@ -297,11 +295,12 @@ class authController extends Controller
         }
 
     }
-
+    
+    
     public function editProfilePengontrak(Request $request){
         $profile = User::where('id',Auth::user()->id)->first();
         $validator = Validator::make($request->all(), [
-            'email' => 'email|unique:users,email,'.$profile->email,
+            'email'     => 'email|unique:users,email,'.$profile->id,
             'name'=>'string',
             'umur'=>'integer',
 
@@ -309,7 +308,9 @@ class authController extends Controller
 
         //if validation fail
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message'=>$validator->errors()    
+            ],422);
         }
         User::where('id', Auth::user()->id)->update([
             'name'=>($request->name )? $request->name : $profile->name,
@@ -328,8 +329,8 @@ class authController extends Controller
         ], 200);
 
     }
-
-    public function getPemilik($nama_kontrakan){
+    
+        public function getPemilik($nama_kontrakan){
         $data = User::where('nama_kontrakan',$nama_kontrakan)->where('role','pemilik')->first();
         if($data){
             return response()->json([
@@ -344,4 +345,6 @@ class authController extends Controller
             ],400);
         }
     }
+    
+    
 }
